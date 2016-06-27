@@ -22,6 +22,8 @@ module.exports = angular.module('spinnaker.core.task.controller', [
     var controller = this;
     const application = app;
 
+    $scope.$state = $state;
+
     var tasksViewStateCache = viewStateCache.tasks || viewStateCache.createCache('tasks', { version: 1 });
 
     function cacheViewState() {
@@ -252,6 +254,8 @@ module.exports = angular.module('spinnaker.core.task.controller', [
 
     initializeViewState();
 
+    application.tasks.activate();
+
     application.tasks.ready().then(() => {
       $scope.viewState.loading = false;
       $scope.viewState.loadError = app.tasks.loadFailure;
@@ -260,7 +264,6 @@ module.exports = angular.module('spinnaker.core.task.controller', [
       }
     });
 
-    application.tasks.activate();
     application.activeState = application.tasks;
     $scope.$on('$destroy', () => {
       application.activeState = application;

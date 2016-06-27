@@ -36,6 +36,12 @@ module.exports = angular.module('spinnaker.core.help.contents', [])
     'aws.serverGroup.stack': '(Optional) <b>Stack</b> is one of the core naming components of a cluster, used to create vertical stacks of dependent services for integration testing.',
     'aws.serverGroup.detail': '(Optional) <b>Detail</b> is a string of free-form alphanumeric characters and hyphens to describe any other variables.',
     'aws.serverGroup.imageName': '(Required) <b>Image</b> is the deployable Amazon Machine Image. Images are restricted to the account and region selected.',
+    'aws.serverGroup.legacyUdf': '<p>(Optional) <b>User Data Format</b> allows overriding of the format used when generating user data during deployment. The default format used is configured ' +
+                                 'in the application\'s attributes, editable via the \'Config\' tab.</p>' +
+                                 '<p><b>Default</b> will use the value from the application\'s configuration.</p>' +
+                                 '<p><b>Modern</b> will use the modern template.</p>' +
+                                 '<p><b>Legacy</b> will use the legacy (<b>deprecated</b>) template.</p>' +
+                                 '<p>This option is intended to allow testing migration from legacy to modern before configuring it for the entire application. If unsure, pick <b>Default</b>.</p>',
     'aws.serverGroup.base64UserData': '(Optional) <b>UserData</b> is a base64 encoded string.',
     'aws.serverGroup.tags': '(Optional) <b>Tags</b> are propagated to the instances in this cluster.',
     'aws.serverGroup.allImages': 'Search for an image that does not match the name of your application.',
@@ -97,6 +103,8 @@ module.exports = angular.module('spinnaker.core.help.contents', [])
       '<li>Trigger</li>' +
       '<li>Context - server groups, bakery results, etc.</li>' +
       '</ul>',
+    'gce.instance.customInstance.cores': '<ul><li>Above 1, vCPU count must be even.</li><li>Zones that support Haswell and Ivy Bridge processors can support custom machine types up to 32 vCPUs.</li><li>Zones that support Sandy Bridge processors can support up to 16 vCPUs.</li></ul>',
+    'gce.instance.customInstance.memory': '<ul><li>Memory per vCPU must be between .9 GB and 6.5 GB.</li><li>Total memory must be a multiple of 256 MB.</li></ul>',
     'gce.instance.customMetadata.instance-template': 'The instance template used to configure this instance.',
     'gce.instance.customMetadata.load-balancer-names': 'This field is used to "remember" what load balancers this instance is associated with, even if it is deregistered.',
     'gce.instance.customMetadata.startup-script': 'This script will run automatically on every boot.',
@@ -105,7 +113,7 @@ module.exports = angular.module('spinnaker.core.help.contents', [])
     'gce.instance.serviceAccount': '<p>Service accounts authenticate applications running on your virtual machine instances to other Google Cloud Platform services. Valid values are either "default" or the full email address of a custom service account.</p>',
     'gce.instance.authScopes': '<p>Service account scopes specify which Google Cloud Platform APIs your instances can authenticate with, and define the level of access that your instances have with those services.</p>',
     'gce.instance.authScopes.cloud-platform': '<p>The instances in this server group have full API access to all Google Cloud services.</p>',
-    'gce.instanceType.32core': '<p>32-core machine types are in Beta and are available only in Ivy Bridge and Haswell zones. Attempting to provision a 32-core machine in an unsupported zone will result in a <b>machine type not found</b> error message.</p>',
+    'gce.instanceType.32core': '<p>32-core machine types are in Beta and are available only in Ivy Bridge and Haswell zones.</p><p>They are not available in these locations:<ul><li>us-central1-a</li><li>europe-west1-b</li><li>europe-west1 (when deploying regionally)</li></p>',
     'gce.loadBalancer.detail': '<p>(Optional) <b>Detail</b> is a string of free-form alphanumeric characters and hyphens to describe any other variables.</p>',
     'gce.loadBalancer.advancedSettings.healthInterval': '<p>Configures the interval, in seconds, between load balancer health checks.</p><p>Default: <b>10</b></p>',
     'gce.loadBalancer.advancedSettings.healthyThreshold': '<p>Configures the number of healthy observations before reinstituting an instance into the load balancer’s traffic rotation.</p><p>Default: <b>10</b></p>',
@@ -252,7 +260,8 @@ module.exports = angular.module('spinnaker.core.help.contents', [])
     'pipeline.config.script.cluster': '<p>(Optional) cluster passed down to script execution as CLUSTER_PARAM</p>',
     'pipeline.config.script.cmc': '<p>(Optional) cmc passed down to script execution as CMC</p>',
     'pipeline.config.script.propertyFile': '<p>(Optional) The name to the properties file produced by the script execution to be used by later stages of the Spinnaker pipeline. </p>',
-    'pipeline.config.docker.trigger.tag': '<p>(Optional) If specified, only changes to this tag will trigger the pipeline. </p>',
+    'pipeline.config.docker.trigger.tag': '<p>(Optional) If specified, only the tags that match this Java Regular Expression will be triggered. Leave empty to trigger builds on any tag pushed.</p>',
+    'pipeline.config.git.trigger.branch': '<p>(Optional) If specified, only pushes to the branches that match this Java Regular Expression will be triggered. Leave empty to trigger builds for every branch.</p>',
     'serverGroupCapacity.useSourceCapacityTrue':  '<p>Spinnaker will use the current capacity of the existing server group when deploying a new server group.</p>' +
       '<p>This setting is intended to support a server group with auto-scaling enabled, where the bounds and desired capacity are controlled by an external process.</p>' +
       '<p>In the event that there is no existing server group, the deploy will fail.</p>',
