@@ -3,13 +3,14 @@
 let angular = require('angular');
 
 module.exports = angular.module('spinnaker.core.pipeline.trigger.docker', [
+    require('../../../../../core/utils/lodash'),
     require('../../../../../core/config/settings.js'),
     require('../../../../../docker/image/image.reader.js'),
     require('./dockerTriggerOptions.directive.js'),
   ])
   .config(function (pipelineConfigProvider) {
     pipelineConfigProvider.registerTrigger({
-      label: 'Docker',
+      label: 'Docker Registry',
       description: 'Executes the pipeline on an image update',
       key: 'docker',
       controller: 'DockerTriggerCtrl as ctrl',
@@ -22,12 +23,12 @@ module.exports = angular.module('spinnaker.core.pipeline.trigger.docker', [
   .factory('dockerTriggerExecutionHandler', function ($q) {
     return {
       formatLabel: (trigger) => {
-        return $q.when(`(Docker) ${trigger.account}: ${trigger.repository}`);
+        return $q.when(`(Docker Registry) ${trigger.account}: ${trigger.repository}`);
       },
       selectorTemplate: require('./selectorTemplate.html'),
     };
   })
-  .controller('DockerTriggerCtrl', function (trigger, $scope, dockerImageReader) {
+  .controller('DockerTriggerCtrl', function (trigger, $scope, dockerImageReader, _) {
     $scope.viewState = {
       imagesLoaded: false,
       imagesRefreshing: false,
@@ -58,7 +59,7 @@ module.exports = angular.module('spinnaker.core.pipeline.trigger.docker', [
     }
 
     function updateTag() {
-      if (trigger.tag !== null && trigger.tag.trim() === '') {
+      if (_.trim(trigger.tag) === '') {
         trigger.tag = null;
       }
     }

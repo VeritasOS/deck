@@ -2,16 +2,15 @@
 
 let angular = require('angular');
 
-module.exports = angular.module('spinnaker.openstack.subnet.subnetSelectField.directive', [
-  require('../../core/config/settings'),
+module.exports = angular.module('spinnaker.openstack.network.networkSelectField.directive', [
   require('../../core/utils/lodash'),
-  require('../../core/subnet/subnet.read.service.js'),
+  require('../../core/network/network.read.service.js'),
   require('../common/selectField.directive.js')
 ])
-  .directive('osSubnetSelectField', function (settings, _, subnetReader) {
+  .directive('networkSelectField', function (_, networkReader) {
     return {
       restrict: 'E',
-      templateUrl: require('./subnetSelectField.directive.html'),
+      templateUrl: require('./networkSelectField.directive.html'),
       scope: {
         label: '@',
         labelColumnSize: '@',
@@ -26,31 +25,29 @@ module.exports = angular.module('spinnaker.openstack.subnet.subnetSelectField.di
       },
       link: function(scope) {
         _.defaults(scope, {
-          label: 'Subnet',
+          label: 'Network',
           labelColumnSize: 3,
-          subnets: [],
-          filter: {}
+          networks: []
         });
 
         var currentRequestId = 0;
 
-        function updateSubnetOptions() {
+        function updateNetworkOptions() {
           currentRequestId++;
           var requestId = currentRequestId;
-          subnetReader.listSubnetsByProvider('openstack').then(function(subnets) {
+          networkReader.listNetworksByProvider('openstack').then(function(networks) {
             if (requestId !== currentRequestId) {
               return;
             }
 
-            scope.subnets = _(subnets)
+            scope.networks = _(networks)
               .filter(scope.filter || {})
-              .map(function(s) { return {label: s.name, value: s.id}; })
+              .map(function(a) { return {label: a.name, value: a.id}; })
               .valueOf();
           });
         }
 
-        scope.$watch('filter', updateSubnetOptions);
-        updateSubnetOptions();
+        scope.$watch('filter', updateNetworkOptions);
       }
     };
 });
